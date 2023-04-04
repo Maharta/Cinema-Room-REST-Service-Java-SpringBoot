@@ -1,0 +1,16 @@
+type: code
+files:
+- name: src/Main.java
+  visible: true
+  text: |-
+    class ProductDTO {
+        //your code
+    }
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/25619#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: "Sun, 02 Apr 2023 02:58:17 UTC"
+record: -1
+submission_language: java17
