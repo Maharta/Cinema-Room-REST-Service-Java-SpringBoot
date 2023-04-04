@@ -62,23 +62,26 @@ public class CinemaService {
         }
     }
 
-    public void refundPurchasedSeat(Map<String, UUID> tokenMap) {
+    private static Predicate<Seat> getSameSeat(SeatRequest seatRequest) {
+        return (seat) -> seat.getCol() == seatRequest.getColumn()
+                && seat.getRow() == seatRequest.getRow();
+    }
+
+    public Seat refundPurchasedSeat(Map<String, UUID> tokenMap) {
         if (!tokenMap.containsKey("token")) {
             throw new IllegalArgumentException("No token provided!");
         }
 
-        SeatPurchase purchasedSeat = cinema.getSeatPurchaseMap().get(tokenMap.get("token"));
+        SeatPurchase seatPurchase = cinema.getSeatPurchaseMap().get(tokenMap.get("token"));
 
-        if (purchasedSeat == null) {
+        if (seatPurchase == null) {
             throw new InvalidRefundTokenException("Wrong token!");
         }
 
-
-    }
-
-    private static Predicate<Seat> getSameSeat(SeatRequest seatRequest) {
-        return (seat) -> seat.getCol() == seatRequest.getColumn()
-                && seat.getRow() == seatRequest.getRow();
+        Seat purchasedSeat = seatPurchase.seat();
+        purchasedSeat.setBooked(false);
+        cinema.getSeatPurchaseMap().remove(tokenMap.get("token"));
+        return purchasedSeat;
     }
 
 

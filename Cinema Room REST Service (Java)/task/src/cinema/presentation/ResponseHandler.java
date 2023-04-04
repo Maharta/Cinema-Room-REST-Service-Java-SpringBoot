@@ -1,5 +1,6 @@
 package cinema.presentation;
 
+import cinema.business.Seat;
 import cinema.business.SeatPurchase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +13,29 @@ public class ResponseHandler {
         Map<String, Object> map = new HashMap<>();
         if (status == HttpStatus.OK) {
             map.put("token", seatPurchase.token());
-            map.put("row", seatPurchase.seat().getRow());
-            map.put("column", seatPurchase.seat().getCol());
-            map.put("price", seatPurchase.seat().getPrice());
+            map.put("ticket", Map.of(
+                    "row", seatPurchase.seat().getRow(),
+                    "column", seatPurchase.seat().getCol(),
+                    "price", seatPurchase.seat().getPrice()
+            ));
         } else {
             map.put("error", message);
         }
         return new ResponseEntity<>(map, status);
+    }
+
+    public static ResponseEntity<Object> generateRefundResponse(HttpStatus status, String message, Seat refundedSeat) {
+        Map<String, Object> response;
+        if (status == HttpStatus.OK) {
+            response = Map.of("returned_ticket", Map.of(
+                    "row", refundedSeat.getRow(),
+                    "column", refundedSeat.getCol(),
+                    "price", refundedSeat.getPrice()
+            ));
+        } else {
+            response = Map.of("error", message);
+        }
+        return new ResponseEntity<>(response, status);
+
     }
 }
