@@ -1,5 +1,6 @@
 package cinema.business;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -9,11 +10,21 @@ public class Seat {
     @JsonProperty("column")
     private int col;
     private final int price;
+    @JsonIgnore
+    private boolean booked;
 
     public Seat(int row, int col) {
         this.row = row;
         this.col = col;
         price = row <= 4 ? 10 : 8;
+    }
+
+    public void setBooked(boolean booked) {
+        this.booked = booked;
+    }
+
+    public boolean isBooked() {
+        return booked;
     }
 
     public int getRow() {
