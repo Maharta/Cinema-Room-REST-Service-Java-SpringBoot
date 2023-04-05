@@ -2,6 +2,7 @@ package cinema.presentation;
 
 import cinema.business.Seat;
 import cinema.business.SeatPurchase;
+import cinema.business.Statistics;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -37,5 +38,15 @@ public class ResponseHandler {
         }
         return new ResponseEntity<>(response, status);
 
+    }
+
+    public static ResponseEntity<Object> generateViewStatsResponse(HttpStatus status, String message, Statistics stat) {
+        if (status == HttpStatus.OK) {
+            return new ResponseEntity<>(stat, status);
+        } else {
+            return new ResponseEntity<>(Map.of(
+                    "error", message
+            ), status);
+        }
     }
 }

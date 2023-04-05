@@ -6,10 +6,7 @@ import cinema.exceptions.SeatAlreadyBookedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.UUID;
@@ -44,5 +41,21 @@ public class CinemaController {
         }
 
     }
+
+    /**
+     * Shouldn't this be a get request? eh, whatever, lets just do what the task tell us to do.
+     */
+    @PostMapping("/stats")
+    public ResponseEntity<Object> viewStatsForAdmin(@RequestParam(required = false) String password) {
+        if (password == null || !password.equals("super_secret")) {
+            return ResponseHandler.generateViewStatsResponse(HttpStatus.UNAUTHORIZED, "The password is wrong!", null);
+        }
+
+        Statistics statForAdmin = cinemaService.getAdminStatistics();
+        return ResponseHandler.generateViewStatsResponse(HttpStatus.OK, null, statForAdmin);
+
+
+    }
+
 
 }

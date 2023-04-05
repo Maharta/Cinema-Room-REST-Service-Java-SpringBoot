@@ -49,7 +49,7 @@ t.start();</code></pre>
 <pre><code class="language-no-highlight">Hello, i'm Thread-0</code></pre>
 <p>Here's a picture that explains how a thread actually starts and why it is not happening immediately.</p>
 <p> </p>
-<p style="text-align: center;"><img alt="" height="95" src="https://ucarecdn.com/9dfe86a1-1880-4e14-9635-015d0091c70c/" width="373"/></p>
+<p style="text-align: center;"><img alt="start threads diagram" height="95" src="https://ucarecdn.com/9dfe86a1-1880-4e14-9635-015d0091c70c/" width="373"/></p>
 <p> </p>
 <p>As you may see, there is some delay between starting a thread and the moment when it really starts working (running).</p>
 <p>By default, a new thread is running in <strong>non-daemon</strong> mode. Reminder: the difference between <strong>daemon</strong> and <strong>non-daemon</strong> mode is that JVM will not terminate the running program while there are <strong>non-daemon</strong> threads left, whereas the <strong>daemon</strong> threads won't prevent the JVM from terminating.</p>
