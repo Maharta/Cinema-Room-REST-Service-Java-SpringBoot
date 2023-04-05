@@ -32,7 +32,6 @@ public class CinemaService {
             return cinema;
         } finally {
             readLock.unlock();
-            System.out.println("read lock unlocked!");
         }
     }
 
@@ -41,8 +40,6 @@ public class CinemaService {
                 || seatRequest.getColumn() > cinema.getTotalColumns() || seatRequest.getColumn() < 1) {
             throw new IllegalArgumentException("The number of a row or a column is out of bounds!");
         }
-
-
         writeLock.lock();
         Optional<Seat> seatToPurchase = cinema.getAvailableSeats().stream()
                 .filter(getSameSeat(seatRequest))
@@ -57,8 +54,6 @@ public class CinemaService {
             }
         } finally {
             writeLock.unlock();
-            System.out.println("write lock unlocked!");
-
         }
     }
 
@@ -67,6 +62,10 @@ public class CinemaService {
                 && seat.getRow() == seatRequest.getRow();
     }
 
+    /**
+     * refundPurchasedSeat doesn't need a writeLock, it uses a concurrentHashmap
+     * as a storage to store purchased seats which is thread safe.
+     */
     public Seat refundPurchasedSeat(Map<String, UUID> tokenMap) {
         if (!tokenMap.containsKey("token")) {
             throw new IllegalArgumentException("No token provided!");
@@ -81,8 +80,19 @@ public class CinemaService {
         Seat purchasedSeat = seatPurchase.seat();
         purchasedSeat.setBooked(false);
         cinema.getSeatPurchaseMap().remove(tokenMap.get("token"));
+        cinema.decreaseIncome(purchasedSeat.getPrice());
         return purchasedSeat;
     }
 
+    public Statistics getAdminStatistics() {
+        try {
+            readLock.lock();
+            int numberOfPurchasedTickets = cinema.getSeatPurchaseMap().size();
+            int numberOfAvailableSeats = Cinema.CinemaConstant.TOTAL_SEATS - numberOfPurchasedTickets;
+            return new Statistics(cinema.getIncome(), numberOfAvailableSeats, numberOfPurchasedTickets);
+        } finally {
+            readLock.unlock();
+        }
+    }
 
 }
